@@ -14,15 +14,9 @@ internal class Day4Test {
     }
 
     @Test
-    fun `test sample 1 part 1`() {
+    fun `test sample part 1`() {
         val day = Day4(SAMPLE_INPUT)
         assertEquals(2, day.part1Solution.computeAnswer())
-    }
-
-    @Test
-    fun `test sample 1 part 2`() {
-        val day = Day4(SAMPLE_INPUT)
-        assertEquals(4, day.part2Solution.computeAnswer())
     }
 
     @Test
