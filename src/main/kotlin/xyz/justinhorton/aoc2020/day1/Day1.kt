@@ -7,14 +7,12 @@ import xyz.justinhorton.aoc2020.Solution
  * [Advent of Code - Day 1](https://adventofcode.com/2020/day/1)
  */
 class Day1(private val inString: String) : Day<List<Int>, Int, Int> {
-    private val parsedInput: List<Int> by lazy {
+    override val parsedInput: List<Int> by lazy {
         inString.lineSequence()
             .filterNot { it.isBlank() }
             .map { it.toInt() }
             .toList()
     }
-
-    override fun parseInput(inString: String): List<Int> = parsedInput
 
     override val part1Solution: Solution<Int> = Solution {
         val pair = parsedInput.asSequence()

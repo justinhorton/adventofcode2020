@@ -8,9 +8,9 @@ import java.util.regex.Pattern
 /**
  * [Advent of Code - Day 2](https://adventofcode.com/2020/day/2)
  */
-class Day2(private val inString: String) : Day<List<ConstrainedPassword>, Int, Int> {
+class Day2(inString: String) : Day<List<ConstrainedPassword>, Int, Int> {
     // 4-5 l: lkljtnpgvrfgwcmkj
-    private val parsedInput: List<ConstrainedPassword> by lazy {
+    override val parsedInput: List<ConstrainedPassword> by lazy {
         inString.lineSequence()
             .filterNot { it.isBlank() }
             .map { line ->
@@ -28,8 +28,6 @@ class Day2(private val inString: String) : Day<List<ConstrainedPassword>, Int, I
             .toList()
     }
 
-    override fun parseInput(inString: String): List<ConstrainedPassword> = parsedInput
-
     override val part1Solution: Solution<Int> = Solution {
         countOfInputsMeetingConstraint {
             pass.count { c -> c == constrainedLetter } in minOccur..maxOccur
@@ -46,7 +44,7 @@ class Day2(private val inString: String) : Day<List<ConstrainedPassword>, Int, I
     }
 
     private fun countOfInputsMeetingConstraint(constraint: ConstrainedPassword.() -> Boolean): Int =
-        parseInput(inString).asSequence()
+        parsedInput.asSequence()
             .filter(constraint)
             .count()
 }

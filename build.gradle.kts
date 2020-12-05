@@ -15,6 +15,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+
     testImplementation(kotlin("test-junit5"))
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.7.0")

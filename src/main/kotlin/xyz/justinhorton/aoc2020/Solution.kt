@@ -5,7 +5,7 @@ fun interface Solution<R> {
 }
 
 interface Day<I, R1, R2> {
-    fun parseInput(inString: String): I
+    val parsedInput: I
 
     val part1Solution: Solution<R1>
 
