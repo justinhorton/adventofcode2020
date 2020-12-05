@@ -1,4 +1,4 @@
-package xyz.justinhorton.aoc2020
+package xyz.justinhorton.aoc2020.template
 
 fun interface Solution<R> {
     fun computeAnswer(): R

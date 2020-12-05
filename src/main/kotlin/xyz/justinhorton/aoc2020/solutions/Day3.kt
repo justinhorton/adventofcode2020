@@ -1,7 +1,7 @@
-package xyz.justinhorton.aoc2020.day3
+package xyz.justinhorton.aoc2020.solutions
 
-import xyz.justinhorton.aoc2020.Day
-import xyz.justinhorton.aoc2020.Solution
+import xyz.justinhorton.aoc2020.template.Day
+import xyz.justinhorton.aoc2020.template.Solution
 
 /**
  * [Advent of Code - Day 3](https://adventofcode.com/2020/day/3)

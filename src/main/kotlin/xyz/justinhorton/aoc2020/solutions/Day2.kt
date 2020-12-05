@@ -1,7 +1,7 @@
-package xyz.justinhorton.aoc2020.day2
+package xyz.justinhorton.aoc2020.solutions
 
-import xyz.justinhorton.aoc2020.Day
-import xyz.justinhorton.aoc2020.Solution
+import xyz.justinhorton.aoc2020.template.Day
+import xyz.justinhorton.aoc2020.template.Solution
 import java.util.Scanner
 import java.util.regex.Pattern
 

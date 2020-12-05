@@ -1,4 +1,4 @@
-package xyz.justinhorton.aoc2020.day1
+package xyz.justinhorton.aoc2020.solutions
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -9,7 +9,7 @@ class Day1Test {
 
     @BeforeEach
     fun beforeEach() {
-        val inFile = Day1Test::class.java.getResource("input.txt")
+        val inFile = Day1Test::class.java.getResource("input-day1.txt")
         day = Day1(inFile.readText())
     }
 
