@@ -3,7 +3,6 @@ package xyz.justinhorton.aoc2020.solutions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 class Day12Test {
     private lateinit var day: Day12
@@ -26,20 +25,20 @@ class Day12Test {
 
     @Test
     fun `test part 2 sample`() {
-        assertEquals(2144, Day11(SAMPLE).part2Solution.computeAnswer())
+        assertEquals(286, Day12(SAMPLE).part2Solution.computeAnswer())
     }
 
-    // this takes ~9.5 mins...
     @Test
     fun `test part 2`() {
-        assertEquals(3, day.part2Solution.computeAnswer())
+        assertEquals(42908, day.part2Solution.computeAnswer())
     }
 }
 
-private val SAMPLE = """
+private val SAMPLE =
+    """
     F10
     N3
     F7
     R90
     F11
-""".trimIndent()
+    """.trimIndent()
