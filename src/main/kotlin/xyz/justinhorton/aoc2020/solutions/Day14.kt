@@ -56,11 +56,59 @@ class Day14(input: String) : Day<List<Day14.Instruction>, Long, Long> {
         }
     }
 
-    override val part2Solution: Solution<Long>
-        get() = TODO("Not yet implemented")
+    override val part2Solution: Solution<Long> = Solution {
+        val instructions = parsedInput
+        val mem = mutableMapOf<Long, Long>()
+
+        var maskInst: SetMask = instructions.first() as SetMask
+
+        instructions.drop(1).forEachIndexed { i, instruction ->
+            println(i)
+            when (instruction) {
+                is SetMask -> maskInst = instruction
+                is MemStore -> {
+                    maskInst.addrsPart2(instruction) { mem[it] = instruction.unmaskedValue }
+                }
+            }
+        }
+
+        mem.values.sum()
+    }
 
     interface Instruction
+
     class SetMask(val masks: List<BitMask>, val orMask: Long, val andMask: Long) : Instruction {
+        fun addrsPart2(store: MemStore, onPerm: (Long) -> Unit) {
+            var power = masks.size - 1
+            var partiallyApplied = store.dst
+            var floating = 0L
+            masks.forEach { m ->
+                if (m is SingleBitMask && m.value) {
+                    partiallyApplied = partiallyApplied or (1L shl power)
+                } else if (m is NoMask) {
+                    floating = floating or (1L shl power)
+                }
+                power -= 1
+            }
+
+            permute(partiallyApplied, floating, onPerm)
+        }
+
+        fun permute(partiallyApplied: Long, floating: Long, onPerm: (Long) -> Unit) {
+            if (floating == 0L) {
+                onPerm(partiallyApplied)
+            } else {
+                for (i in 35 downTo 0) {
+                    val f = (floating shr i) and 1L
+                    if (f == 1L) {
+                        val newFloating = floating xor (1L shl i)
+                        permute(partiallyApplied, newFloating, onPerm)
+                        permute(partiallyApplied xor (1L shl i), newFloating, onPerm)
+                    }
+                }
+            }
+        }
+
         companion object {
             fun from(bitString: String): SetMask {
                 var pow = bitString.length - 1
@@ -68,7 +116,6 @@ class Day14(input: String) : Day<List<Day14.Instruction>, Long, Long> {
                 var orMask: Long = 0L
                 // mask off
                 var andMask: Long = (1L shl (pow + 1)) - 1
-
 
                 val sbms = bitString.map { c ->
                     val mask = when (c) {
