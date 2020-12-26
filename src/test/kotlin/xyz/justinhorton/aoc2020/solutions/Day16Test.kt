@@ -15,11 +15,11 @@ class Day16Test {
 
     @Test
     fun `test part 1`() {
-        assertEquals(410, day.part1Solution.computeAnswer())
+        assertEquals(21996, day.part1Solution.computeAnswer())
     }
 
     @Test
     fun `test part 2`() {
-        assertEquals(238, day.part2Solution.computeAnswer())
+        assertEquals(650080463519L, day.part2Solution.computeAnswer())
     }
 }
