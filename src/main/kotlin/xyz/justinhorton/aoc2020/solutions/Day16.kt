@@ -104,4 +104,3 @@ class Day16(input: String) : Day<Day16.TicketInfo, Int, Long> {
         }
     }
 }
-

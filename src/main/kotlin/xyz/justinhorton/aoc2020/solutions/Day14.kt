@@ -10,6 +10,7 @@ class Day14(input: String) : Day<List<Day14.Instruction>, Long, Long> {
     override val parsedInput: List<Instruction> by lazy {
         val memRegex = "mem\\[(\\d+)] = (\\d+)".toRegex()
         val maskRegex = "mask = ([01X]+)".toRegex()
+
         input.trim()
             .lineSequence()
             .map { line ->
@@ -41,7 +42,7 @@ class Day14(input: String) : Day<List<Day14.Instruction>, Long, Long> {
                 is SetMask -> maskInst = instruction
                 is MemStore -> {
                     val unmaskedValue = instruction.unmaskedValue
-                    val valueToStore = (unmaskedValue and maskInst.andMask) or maskInst!!.orMask
+                    val valueToStore = (unmaskedValue and maskInst.andMask) or maskInst.orMask
                     mem[instruction.dst] = valueToStore
                 }
             }
@@ -50,24 +51,30 @@ class Day14(input: String) : Day<List<Day14.Instruction>, Long, Long> {
         mem.values.sum()
     }
 
-    fun Long.printBits() {
-        for (i in 35 downTo 0) {
-            print((this shr i) and 1L)
-        }
-    }
-
     override val part2Solution: Solution<Long> = Solution {
         val instructions = parsedInput
         val mem = mutableMapOf<Long, Long>()
 
         var maskInst: SetMask = instructions.first() as SetMask
 
-        instructions.drop(1).forEachIndexed { i, instruction ->
-            println(i)
+        instructions.drop(1).forEach { instruction ->
             when (instruction) {
                 is SetMask -> maskInst = instruction
                 is MemStore -> {
-                    maskInst.addrsPart2(instruction) { mem[it] = instruction.unmaskedValue }
+                    val zeroPaddedRawDst = instruction.dst.toString(2).padStart(36, '0')
+                    val partiallyResolvedFloatingDst = maskInst.originalStr.zip(zeroPaddedRawDst) { maskBit, dstBit ->
+                        if (maskBit == '0') {
+                            // does not change the raw dst bit
+                            dstBit
+                        } else {
+                            // 1 overrides the raw dst bit, X needs to be permuted
+                            maskBit
+                        }
+                    }.joinToString("")
+
+                    maskInst.onEachResolvedFloatingDst(partiallyResolvedFloatingDst) { dst ->
+                        mem[dst] = instruction.unmaskedValue
+                    }
                 }
             }
         }
@@ -77,35 +84,13 @@ class Day14(input: String) : Day<List<Day14.Instruction>, Long, Long> {
 
     interface Instruction
 
-    class SetMask(val masks: List<BitMask>, val orMask: Long, val andMask: Long) : Instruction {
-        fun addrsPart2(store: MemStore, onPerm: (Long) -> Unit) {
-            var power = masks.size - 1
-            var partiallyApplied = store.dst
-            var floating = 0L
-            masks.forEach { m ->
-                if (m is SingleBitMask && m.value) {
-                    partiallyApplied = partiallyApplied or (1L shl power)
-                } else if (m is NoMask) {
-                    floating = floating or (1L shl power)
-                }
-                power -= 1
-            }
-
-            permute(partiallyApplied, floating, onPerm)
-        }
-
-        fun permute(partiallyApplied: Long, floating: Long, onPerm: (Long) -> Unit) {
-            if (floating == 0L) {
-                onPerm(partiallyApplied)
+    class SetMask(val originalStr: String, val orMask: Long, val andMask: Long) : Instruction {
+        fun onEachResolvedFloatingDst(baseAddr: String, onEachDst: (Long) -> Unit) {
+            if ("X" in baseAddr) {
+                onEachResolvedFloatingDst(baseAddr.replaceFirst("X", "0"), onEachDst)
+                onEachResolvedFloatingDst(baseAddr.replaceFirst("X", "1"), onEachDst)
             } else {
-                for (i in 35 downTo 0) {
-                    val f = (floating shr i) and 1L
-                    if (f == 1L) {
-                        val newFloating = floating xor (1L shl i)
-                        permute(partiallyApplied, newFloating, onPerm)
-                        permute(partiallyApplied xor (1L shl i), newFloating, onPerm)
-                    }
-                }
+                onEachDst(baseAddr.toLong(2))
             }
         }
 
@@ -117,8 +102,8 @@ class Day14(input: String) : Day<List<Day14.Instruction>, Long, Long> {
                 // mask off
                 var andMask: Long = (1L shl (pow + 1)) - 1
 
-                val sbms = bitString.map { c ->
-                    val mask = when (c) {
+                bitString.forEach { c ->
+                    when (c) {
                         '1', '0' -> {
                             val isOne = c == '1'
                             if (isOne) {
@@ -131,9 +116,8 @@ class Day14(input: String) : Day<List<Day14.Instruction>, Long, Long> {
                         else -> NoMask
                     }
                     pow -= 1
-                    mask
                 }
-                return SetMask(sbms, orMask, andMask)
+                return SetMask(bitString, orMask, andMask)
             }
         }
     }
